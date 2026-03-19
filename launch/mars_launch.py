@@ -5,6 +5,9 @@ from launch.actions import ExecuteProcess
 from launch_ros.actions import Node
 
 def generate_launch_description():
+    pkg = get_package_share_directory('embedded_systems_project')
+    world_file = os.path.join(pkg, 'worlds', 'mars.sdf')
+
     urdf_file = os.path.join(
         get_package_share_directory('turtlebot3_description'),
         'urdf', 'turtlebot3_burger.urdf'
@@ -15,23 +18,40 @@ def generate_launch_description():
     return LaunchDescription([
         # Gazebo starten
         ExecuteProcess(
-            cmd=['ign', 'gazebo', 
-                 os.path.expanduser('~/ros2_ws/src/mars_world/worlds/mars.sdf')],
+            cmd=['ign', 'gazebo', world_file],
             env={'LIBGL_ALWAYS_SOFTWARE': '1'},
             output='screen'
         ),
-        # Robot Description publishen
+
+        # ROS <-> Gazebo Bridge 
+        Node(
+            package='ros_gz_bridge',
+            executable='parameter_bridge',
+            arguments=[
+                '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock',
+                '/scan@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan',
+                '/odom@nav_msgs/msg/Odometry[gz.msgs.Odometry',
+                '/cmd_vel@geometry_msgs/msg/Twist]gz.msgs.Twist',
+            ],
+            output='screen'
+        ),
+
+        # Robot Description
         Node(
             package='robot_state_publisher',
             executable='robot_state_publisher',
-            parameters=[{'robot_description': robot_desc}]
+            parameters=[{
+                'robot_description': robot_desc,
+                'use_sim_time': True 
+            }]
         ),
-        # Roboter in Gazebo spawnen
+
+        # Roboter spawnen
         Node(
             package='ros_gz_sim',
             executable='create',
             arguments=['-name', 'turtlebot3', '-topic', 'robot_description',
-                      '-x', '0', '-y', '0', '-z', '0.1'],
+                       '-x', '0', '-y', '0', '-z', '0.1'],
             output='screen'
         ),
     ])
