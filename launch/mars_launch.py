@@ -18,8 +18,13 @@ def generate_launch_description():
     return LaunchDescription([
         # Gazebo starten
         ExecuteProcess(
-            cmd=['ign', 'gazebo', world_file],
-            env={'LIBGL_ALWAYS_SOFTWARE': '1'},
+            cmd=['ign', 'gazebo', world_file, '--render-engine', 'ogre'],
+            env={
+		'LIBGL_ALWAYS_SOFTWARE': '1', 
+		'HOME': os.environ.get('HOME', '/home/hannes'),
+		'DISPLAY': os.environ.get('DISPLAY', ':0'),
+  		'IGN_GAZEBO_RESOURCE_PATH': '/opt/ros/humble/share'
+	    },
             output='screen'
         ),
 
