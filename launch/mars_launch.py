@@ -11,13 +11,15 @@ def generate_launch_description():
     )
     with open(urdf_file, 'r') as f:
         robot_desc = f.read()
-
+    env = os.environ.copy()
+    env['LIBGL_ALWAYS_SOFTWARE'] = '1'
+    env['IGN_LOG_PATH'] = '/tmp/ign_logs'
     return LaunchDescription([
         # Gazebo starten
         ExecuteProcess(
             cmd=['ign', 'gazebo', 
-                 os.path.expanduser('~/ros2_ws/src/mars_world/worlds/mars.sdf')],
-            env={'LIBGL_ALWAYS_SOFTWARE': '1'},
+                 os.path.expanduser('~/ros2_ws/src/embedded_systems_project/worlds/mars.sdf')],
+            env=env,
             output='screen'
         ),
         # Robot Description publishen
