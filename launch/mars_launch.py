@@ -1,4 +1,5 @@
 import os
+import xacro
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import ExecuteProcess
@@ -8,7 +9,7 @@ def generate_launch_description():
     tb3_share = get_package_share_directory('turtlebot3_description')
     urdf_file = os.path.join(tb3_share, 'urdf', 'turtlebot3_burger.urdf')
     with open(urdf_file, 'r') as f:
-        robot_desc = f.read()
+        robot_desc = f.read().replace('${namespace}', '')
     env = os.environ.copy()
     env['LIBGL_ALWAYS_SOFTWARE'] = '1'
     env['IGN_LOG_PATH'] = '/tmp/ign_logs'
