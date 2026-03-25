@@ -2,6 +2,7 @@
 
 # TurtleBot3 Mars Simulation - Automated Installation Script
 # This script sets up the complete ROS 2 Humble workspace with all dependencies
+# Following official ROS 2 Humble installation guide
 
 set -e  # Exit on error
 
@@ -52,26 +53,57 @@ check_ros2_installation() {
     fi
 }
 
-# Install ROS 2 Humble
-install_ros2() {
-    print_status "Installing ROS 2 Humble..."
+# Set locale (official step 1)
+set_locale() {
+    print_status "Setting up locale..."
     
-    # Set up locale
+    locale  # check for UTF-8
+    
     sudo apt update && sudo apt install -y locales
     sudo locale-gen en_US en_US.UTF-8
     sudo update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
     export LANG=en_US.UTF-8
     
-    # Add ROS 2 apt repository
+    locale  # verify settings
+    
+    print_status "Locale configured."
+}
+
+# Setup Sources (official step 2)
+setup_sources() {
+    print_status "Setting up ROS 2 apt sources..."
+    
+    # Ensure Ubuntu Universe repository is enabled
     sudo apt install -y software-properties-common
     sudo add-apt-repository universe -y
-    sudo apt update && sudo apt install -y curl
-    sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
-    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
     
-    # Install ROS 2 Humble
+    # Install ros2-apt-source package (official method)
+    sudo apt update && sudo apt install -y curl
+    export ROS_APT_SOURCE_VERSION=$(curl -s https://api.github.com/repos/ros-infrastructure/ros-apt-source/releases/latest | grep -F "tag_name" | awk -F'"' '{print $4}')
+    curl -L -o /tmp/ros2-apt-source.deb "https://github.com/ros-infrastructure/ros-apt-source/releases/download/${ROS_APT_SOURCE_VERSION}/ros2-apt-source_${ROS_APT_SOURCE_VERSION}.$(. /etc/os-release && echo ${UBUNTU_CODENAME:-${VERSION_CODENAME}})_all.deb"
+    sudo dpkg -i /tmp/ros2-apt-source.deb
+    
+    print_status "ROS 2 apt sources configured."
+}
+
+# Install ROS 2 packages (official step 3)
+install_ros2() {
+    print_status "Installing ROS 2 Humble..."
+    
+    # Update apt repository caches
     sudo apt update
+    
+    # Upgrade system (IMPORTANT: addresses systemd/udev issue)
+    print_status "Upgrading system packages (required to avoid systemd issues)..."
+    sudo apt upgrade -y
+    
+    # Install ROS 2 Desktop (Recommended)
+    print_status "Installing ros-humble-desktop..."
     sudo apt install -y ros-humble-desktop
+    
+    # Install development tools
+    print_status "Installing ros-dev-tools..."
+    sudo apt install -y ros-dev-tools
     
     print_status "ROS 2 Humble installed successfully."
 }
@@ -172,12 +204,8 @@ build_workspace() {
 copy_burger_model() {
     print_status "Copying updated burger model..."
     
-    SOURCE_MODEL="~/ros2_ws/src/embedded_systems_project/models/turtlebot3_burger/model.sdf"
-    TARGET_MODEL="~/ros2_ws/install/turtlebot3_gazebo/share/turtlebot3_gazebo/models/turtlebot3_burger/model.sdf"
-    
-    # Expand tilde
-    SOURCE_MODEL="${SOURCE_MODEL/#\~/$HOME}"
-    TARGET_MODEL="${TARGET_MODEL/#\~/$HOME}"
+    SOURCE_MODEL="$HOME/ros2_ws/src/embedded_systems_project/models/turtlebot3_burger/model.sdf"
+    TARGET_MODEL="$HOME/ros2_ws/install/turtlebot3_gazebo/share/turtlebot3_gazebo/models/turtlebot3_burger/model.sdf"
     
     if [ -f "$SOURCE_MODEL" ]; then
         cp "$SOURCE_MODEL" "$TARGET_MODEL"
@@ -193,7 +221,7 @@ setup_environment() {
     print_status "Setting up environment variables..."
     
     # Backup .bashrc
-    cp ~/.bashrc ~/.bashrc.backup
+    cp ~/.bashrc ~/.bashrc.backup.$(date +%Y%m%d_%H%M%S)
     
     # Check if lines already exist to avoid duplicates
     grep -qxF 'source /opt/ros/humble/setup.bash' ~/.bashrc || echo 'source /opt/ros/humble/setup.bash' >> ~/.bashrc
@@ -228,6 +256,8 @@ main() {
         read -p "Install ROS 2 Humble? (y/n) " -n 1 -r
         echo
         if [[ $REPLY =~ ^[Yy]$ ]]; then
+            set_locale
+            setup_sources
             install_ros2
         else
             print_error "ROS 2 Humble is required. Exiting."
