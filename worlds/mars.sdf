@@ -6,7 +6,16 @@
     <light type="directional" name="sun">
       <cast_shadows>true</cast_shadows>
       <pose>0 0 10 0 0 0</pose>
+      <intensity>1</intensity>
+      <direction>-1 -1 -1</direction>
       <diffuse>0.8 0.4 0.2 1</diffuse>
+      <specular>0.1 0.1 0.1 1</specular>
+      <attenuation>
+        <range>10</range>
+        <linear>1</linear>
+        <constant>1</constant>
+        <quadratic>0</quadratic>
+      </attenuation>
     </light>
 
     <!-- Boden -->
@@ -17,8 +26,14 @@
           <geometry><plane><normal>0 0 1</normal></plane></geometry>
         </collision>
         <visual name="visual">
+          <cast_shadows>false</cast_shadows>
           <geometry><plane><normal>0 0 1</normal><size>20 20</size></plane></geometry>
-          <material><ambient>0.6 0.3 0.1 1</ambient></material>
+          <material>
+            <ambient>0.392 0.235 0.157 1</ambient>
+            <diffuse>0.918 0.325 0.196 1</diffuse>
+            <specular>0.196 0.118 0.078 1</specular>
+            <emissive>0 0 0 1</emissive>
+          </material>
         </visual>
       </link>
     </model>
@@ -33,7 +48,12 @@
         </collision>
         <visual name="visual">
           <geometry><cylinder><radius>0.5</radius><length>1.0</length></cylinder></geometry>
-          <material><ambient>0.5 0.2 0.1 1</ambient></material>
+          <material>
+            <ambient>0.235 0.196 0.176 1</ambient>
+            <diffuse>0.392 0.314 0.275 1</diffuse>
+            <specular>0.314 0.275 0.235 1</specular>
+            <emissive>0 0 0 1</emissive>
+          </material>
         </visual>
       </link>
     </model>
@@ -48,7 +68,12 @@
         </collision>
         <visual name="visual">
           <geometry><box><size>1.0 1.0 1.0</size></box></geometry>
-          <material><ambient>0.4 0.2 0.1 1</ambient></material>
+          <material>
+            <ambient>0.314 0.255 0.216 1</ambient>
+            <diffuse>0.549 0.431 0.353 1</diffuse>
+            <specular>0.392 0.314 0.255 1</specular>
+            <emissive>0 0 0 1</emissive>
+          </material>
         </visual>
       </link>
     </model>
@@ -63,7 +88,12 @@
         </collision>
         <visual name="visual">
           <geometry><cylinder><radius>0.3</radius><length>1.0</length></cylinder></geometry>
-          <material><ambient>0.5 0.25 0.1 1</ambient></material>
+          <material>
+            <ambient>0.353 0.216 0.157 1</ambient>
+            <diffuse>0.588 0.353 0.255 1</diffuse>
+            <specular>0.275 0.196 0.157 1</specular>
+            <emissive>0 0 0 1</emissive>
+          </material>
         </visual>
       </link>
     </model>
@@ -78,7 +108,12 @@
         </collision>
         <visual name="visual">
           <geometry><box><size>3.0 0.3 1.0</size></box></geometry>
-          <material><ambient>0.45 0.2 0.1 1</ambient></material>
+          <material>
+            <ambient>0.157 0.137 0.118 1</ambient>
+            <diffuse>0.275 0.216 0.176 1</diffuse>
+            <specular>0.235 0.196 0.157 1</specular>
+            <emissive>0 0 0 1</emissive>
+          </material>
         </visual>
       </link>
     </model>
