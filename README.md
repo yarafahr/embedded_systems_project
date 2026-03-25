@@ -1,6 +1,5 @@
 ## Voraussetzungen
 - Ubuntu 22.04 LTS (in UTM oder VirtualBox)
-- Gazebo Fortress (Ignition)
  
 ---
 
