@@ -1,9 +1,18 @@
 ## Voraussetzungen
 - Ubuntu 22.04 LTS (in UTM oder VirtualBox)
-- ROS 2 Humble
 - Gazebo Fortress (Ignition)
  
 ---
+
+## Quick Start (Automatisierte Installation)
+
+Nachdem du dieses repo gecloned hast:
+```bash
+cd ~/ros2_ws/src/embedded_systems_project
+chmod +x setup.sh
+./setup.sh
+source ~/.bashrc
+```
  
 ## Installation
  
