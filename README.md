@@ -6,8 +6,11 @@
 
 ## Quick Start (Automatisierte Installation)
 
-Nachdem du dieses repo gecloned hast:
 ```bash
+mkdir -p ~/ros2_ws/src
+cd ~/ros2_ws/src
+git clone https://github.com/yarafahr/embedded_systems_project.git
+
 cd ~/ros2_ws/src/embedded_systems_project
 chmod +x setup.sh
 ./setup.sh
