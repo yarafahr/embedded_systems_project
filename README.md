@@ -171,4 +171,4 @@ while navigating:
 
 after some time (manualy) exploring:
 ![after_exploring](/docs/SLAM_and_navigation/Screenshot_after_exploring.png)
-(interne Karte spiegelt nicht ganz die reale Welt weider, wahrscheinlich da zu wenige Feature existieren (viele gerundete Kanten, große leere Flächen))
+Die interne Karte spiegelt hier nicht die reale Welt wieder. Wahrscheinlich da zu wenige Feature existieren. Es gibt eher gerundete Kanten und große leere Flächen in der Map.
