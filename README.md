@@ -1,9 +1,20 @@
 ## Voraussetzungen
 - Ubuntu 22.04 LTS (in UTM oder VirtualBox)
-- ROS 2 Humble
-- Gazebo Fortress (Ignition)
  
 ---
+
+## Quick Start (Automatisierte Installation)
+
+```bash
+mkdir -p ~/ros2_ws/src
+cd ~/ros2_ws/src
+git clone https://github.com/yarafahr/embedded_systems_project.git
+
+cd ~/ros2_ws/src/embedded_systems_project
+chmod +x setup.sh
+./setup.sh
+source ~/.bashrc
+```
  
 ## Installation
  
@@ -36,22 +47,38 @@ sudo apt install python3-colcon-common-extensions python3-rosdep -y
 mkdir -p ~/ros2_ws/src
 cd ~/ros2_ws/src
 git clone https://github.com/yarafahr/embedded_systems_project.git
-cd ~/ros2_ws
+
+```
+
+### 4. Dependency Repos clonen
+```bash
+cd ~/ros2_ws/src
+git clone -b humble https://github.com/ROBOTIS-GIT/DynamixelSDK.git
+git clone -b humble https://github.com/ROBOTIS-GIT/turtlebot3_msgs.git
+git clone -b humble https://github.com/ROBOTIS-GIT/turtlebot3.git
+git clone https://github.som/azeey/turtlebot3_simulations -b new_gazebo
+
 ```
  
-### 4. rosdep initialisieren
+### 5. rosdep initialisieren
 ```bash
+cd ~/ros2_ws
 sudo rosdep init
 rosdep update
 rosdep install --from-paths src --ignore-src -r -y
 ```
  
-### 5. Workspace bauen
+### 6. Workspace bauen
 ```bash
 cd ~/ros2_ws
 colcon build
 echo "source ~/ros2_ws/install/setup.bash" >> ~/.bashrc
 source ~/.bashrc
+```
+
+### 7. Migriertes Burger Model injezieren
+``` bash
+cp ~/ros2_ws/src/embedded_systems_project/models/turtlebot3_burger/model.sdf ~/ros2_ws/install/turtlebot3_gazebo/share/turtlebot3_gazebo/models/turtlebot3_burger/model.sdf
 ```
  
 ---
@@ -73,9 +100,12 @@ Gazebo öffnet sich mit der Mars-Welt und der TurtleBot3 wird automatisch gespaw
 ```
 mars_world/
 ├── worlds/
-│   └── mars.sdf        # Mars-Simulationswelt
+│   └── mars.sdf            # Mars-Simulationswelt
+├── models/
+│   └── turtlebot3_burger/
+│       └── model.sdf       # migriertes burger Modell
 └── launch/
-    └── mars_launch.py  # Startet Gazebo + TurtleBot3
+    └── mars_launch.py      # Startet Gazebo + TurtleBot3
 ```
  
 ---
