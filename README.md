@@ -153,7 +153,7 @@ ros2 launch slam_toolbox online_async_launch.py use_sim_time:=True
 
 Starte Nav2 in einem anderen Terminal:
 ``` bash
-ros2 launch nav2_bringup navigation_launch.py   use_sim_time:=True   params_file:=/opt/ros/humble/share/nav2_bringup/params/nav2_params.yaml
+ros2 launch nav2_bringup navigation_launch.py   use_sim_time:=True   params_file:=$HOME/ros2_ws/src/embedded_systems_project/params/nav2_params.yaml
 ```
 
 Starte RViz in einem anderen Terminal:
