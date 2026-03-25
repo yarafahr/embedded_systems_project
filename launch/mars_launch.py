@@ -5,19 +5,28 @@ from launch.actions import ExecuteProcess
 from launch_ros.actions import Node
 
 def generate_launch_description():
-    urdf_file = os.path.join(
-        get_package_share_directory('turtlebot3_description'),
-        'urdf', 'turtlebot3_burger.urdf'
-    )
-    with open(urdf_file, 'r') as f:
-        robot_desc = f.read()
+    tb3_share = get_package_share_directory('turtlebot3_description')
+    tb3_gazebo_models = os.path.join(
+    get_package_share_directory('turtlebot3_gazebo'), 'models')
+    parent_share = os.path.dirname(tb3_share)
 
+    urdf_file = os.path.join(tb3_share, 'urdf', 'turtlebot3_burger.urdf')
+    with open(urdf_file, 'r') as f:
+        robot_desc = f.read().replace('${namespace}', '')
+
+    env = os.environ.copy()
+    env['LIBGL_ALWAYS_SOFTWARE'] = '1'
+    env['IGN_LOG_PATH'] = '/tmp/ign_logs'
+    env['IGN_GAZEBO_RESOURCE_PATH'] = ':'.join([
+    parent_share,
+    tb3_gazebo_models,
+    env.get('IGN_GAZEBO_RESOURCE_PATH', '')]).rstrip(':')
     return LaunchDescription([
         # Gazebo starten
         ExecuteProcess(
             cmd=['ign', 'gazebo', 
-                 os.path.expanduser('~/ros2_ws/src/mars_world/worlds/mars.sdf')],
-            env={'LIBGL_ALWAYS_SOFTWARE': '1'},
+                 os.path.expanduser('~/ros2_ws/src/embedded_systems_project/worlds/mars.sdf')],
+            env=env,
             output='screen'
         ),
         # Robot Description publishen
@@ -30,8 +39,23 @@ def generate_launch_description():
         Node(
             package='ros_gz_sim',
             executable='create',
-            arguments=['-name', 'turtlebot3', '-topic', 'robot_description',
-                      '-x', '0', '-y', '0', '-z', '0.1'],
+            arguments=['-name', 'turtlebot3', '-file', os.path.join(
+            get_package_share_directory('turtlebot3_gazebo'),
+            'models', 'turtlebot3_burger', 'model.sdf'
+        ), '-x', '0', '-y', '0', '-z', '0.1'],
             output='screen'
         ),
+	Node(
+	package='ros_gz_bridge',
+	executable='parameter_bridge',
+	arguments=[
+	'/clock@rosgraph_msgs/msg/Clock[ignition.msgs.Clock',
+	'/scan@sensor_msgs/msg/LaserScan[ignition.msgs.LaserScan',
+	'/odom@nav_msgs/msg/Odometry[ignition.msgs.Odometry',
+	'/tf@tf2_msgs/msg/TFMessage[ignition.msgs.Pose_V',
+	'/joint_states@sensor_msgs/msg/JointState[ignition.msgs.Model',
+	'/cmd_vel@geometry_msgs/msg/Twist]ignition.msgs.Twist',
+	],
+	output='screen'
+),
     ])
