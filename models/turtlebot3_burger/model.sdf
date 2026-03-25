@@ -37,6 +37,11 @@
             <scale>0.001 0.001 0.001</scale>
           </mesh>
         </geometry>
+        <!-- FIX: restored missing material tag -->
+        <material>
+          <ambient>0.3 0.3 0.3 1.0</ambient>
+          <diffuse>0.3 0.3 0.3 1.0</diffuse>
+        </material>
       </visual>
     </link>
 
@@ -124,6 +129,11 @@
             <scale>0.001 0.001 0.001</scale>
           </mesh>
         </geometry>
+        <!-- FIX: restored missing material tag -->
+        <material>
+          <ambient>0.2 0.2 0.2 1.0</ambient>
+          <diffuse>0.2 0.2 0.2 1.0</diffuse>
+        </material>
       </visual>
 
       <!-- Lidar sensor: removed libgazebo_ros_ray_sensor plugin.
@@ -213,6 +223,11 @@
             <scale>0.001 0.001 0.001</scale>
           </mesh>
         </geometry>
+        <!-- FIX: restored missing material tag -->
+        <material>
+          <ambient>0.2 0.2 0.2 1.0</ambient>
+          <diffuse>0.2 0.2 0.2 1.0</diffuse>
+        </material>
       </visual>
     </link>
 
@@ -270,6 +285,11 @@
             <scale>0.001 0.001 0.001</scale>
           </mesh>
         </geometry>
+        <!-- FIX: restored missing material tag -->
+        <material>
+          <ambient>0.2 0.2 0.2 1.0</ambient>
+          <diffuse>0.2 0.2 0.2 1.0</diffuse>
+        </material>
       </visual>
     </link>
 
