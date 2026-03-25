@@ -1,4 +1,4 @@
-## Voraussetzungen
+c## Voraussetzungen
 - Ubuntu 22.04 LTS (in UTM oder VirtualBox)
  
 ---
@@ -145,8 +145,30 @@ Starte die Simulation:
 ros2 launch ~/ros2_ws/src/embedded_systems_project/launch/mars_launch.py
 ```
 
+Starte SLAM-toolbox in einem anderen Terminal:
+``` bash
+ros2 launch slam_toolbox online_async_launch.py use_sim_time:=True
+
+```
 
 Starte Nav2 in einem anderen Terminal:
 ``` bash
-ros2 launch nav2_bringup navigation_launch.py
+ros2 launch nav2_bringup navigation_launch.py   use_sim_time:=True   params_file:=/opt/ros/humble/share/nav2_bringup/params/nav2_params.yaml
 ```
+
+Starte RViz in einem anderen Terminal:
+``` bash
+ros2 run rviz2 rviz2 -d /opt/ros/humble/share/nav2_bringup/rviz/nav2_default_view.rviz
+```
+
+Nun Kannst du in RVIZ "Nav2Goal" anklicken, auf der Karte das Ziel markieren und der Roboter findet autonom dahin.
+
+after bringup:
+![after_bringup](/docs/SLAM_and_navigation/Screenshot_bringup.png)
+
+while navigating:
+![while_navigating](/docs/SLAM_and_navigation/Screenshot_navigating.png)s
+
+after some time (manualy) exploring:
+![after_exploring](/docs/SLAM_and_navigation/Screenshot_after_exploring.png)
+(interne Karte spiegelt nicht ganz die reale Welt weider, wahrscheinlich da zu wenige Feature existieren (viele gerundete Kanten, große leere Flächen))
