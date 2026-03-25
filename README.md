@@ -109,3 +109,44 @@ mars_world/
 ```
  
 ---
+
+## SLAM und Telop
+
+Starte die Simulation:
+``` bash
+ros2 launch ~/ros2_ws/src/embedded_systems_project/launch/mars_launch.py
+```
+
+Starte die SLAM Node in einem anderen Terminal:
+``` bash
+ros2 launch turtlebot3_cartographer cartographer.launch.py use_sim_time:=True
+```
+
+Starte die teleop Node in einem anderen Terminal:
+``` bash
+ros2 run turtlebot3_teleop teleop_keyboard
+```
+![SLAM und Teleop Screnshot](/docs/SLAM_and_teleop/screenshot.png)
+
+Nun kann der Roboter mit der Tastatur gesteuert werden, während er eine interne repräsentation der Welt erstellt.
+
+Zum speichern der Karte, in einem anderen Terminal:
+``` bash
+ros2 run nav2_map_server map_saver_cli -f ~/map
+```
+![interne map](/docs/SLAM_and_teleop/map.png)
+
+## SLAM und Navigation
+
+[reference](https://docs.nav2.org/tutorials/docs/navigation2_with_slam.html)
+
+Starte die Simulation:
+``` bash
+ros2 launch ~/ros2_ws/src/embedded_systems_project/launch/mars_launch.py
+```
+
+
+Starte Nav2 in einem anderen Terminal:
+``` bash
+ros2 launch nav2_bringup navigation_launch.py
+```
