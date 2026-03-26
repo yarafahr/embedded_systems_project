@@ -54,7 +54,7 @@ def generate_launch_description():
                     get_package_share_directory('turtlebot3_gazebo'),
                     'models', 'turtlebot3_burger', 'model.sdf'
                 ),
-                '-x', '0', '-y', '0', '-z', '0.1'
+                '-x', '0', '-y', '-5', '-z', '0', '-Y', '1.57'
             ],
             output='screen'
         ),
