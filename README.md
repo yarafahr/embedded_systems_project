@@ -1,4 +1,4 @@
-## Voraussetzungen
+c## Voraussetzungen
 - Ubuntu 22.04 LTS (in UTM oder VirtualBox)
  
 ---
@@ -109,3 +109,66 @@ mars_world/
 ```
  
 ---
+
+## SLAM und Telop
+
+Starte die Simulation:
+``` bash
+ros2 launch ~/ros2_ws/src/embedded_systems_project/launch/mars_launch.py
+```
+
+Starte die SLAM Node in einem anderen Terminal:
+``` bash
+ros2 launch turtlebot3_cartographer cartographer.launch.py use_sim_time:=True
+```
+
+Starte die teleop Node in einem anderen Terminal:
+``` bash
+ros2 run turtlebot3_teleop teleop_keyboard
+```
+![SLAM und Teleop Screnshot](/docs/SLAM_and_teleop/screenshot.png)
+
+Nun kann der Roboter mit der Tastatur gesteuert werden, während er eine interne repräsentation der Welt erstellt.
+
+Zum speichern der Karte, in einem anderen Terminal:
+``` bash
+ros2 run nav2_map_server map_saver_cli -f ~/map
+```
+![interne map](/docs/SLAM_and_teleop/map.png)
+
+## SLAM und Navigation
+
+[reference](https://docs.nav2.org/tutorials/docs/navigation2_with_slam.html)
+
+Starte die Simulation:
+``` bash
+ros2 launch ~/ros2_ws/src/embedded_systems_project/launch/mars_launch.py
+```
+
+Starte SLAM-toolbox in einem anderen Terminal:
+``` bash
+ros2 launch slam_toolbox online_async_launch.py use_sim_time:=True
+
+```
+
+Starte Nav2 in einem anderen Terminal:
+``` bash
+ros2 launch nav2_bringup navigation_launch.py   use_sim_time:=True   params_file:=$HOME/ros2_ws/src/embedded_systems_project/params/nav2_params.yaml
+```
+
+Starte RViz in einem anderen Terminal:
+``` bash
+ros2 run rviz2 rviz2 -d /opt/ros/humble/share/nav2_bringup/rviz/nav2_default_view.rviz
+```
+
+Nun Kannst du in RVIZ "Nav2Goal" anklicken, auf der Karte das Ziel markieren und der Roboter findet autonom dahin.
+
+after bringup:
+![after_bringup](/docs/SLAM_and_navigation/Screenshot_bringup.png)
+
+while navigating:
+![while_navigating](/docs/SLAM_and_navigation/Screenshot_navigating.png)s
+
+after some time (manualy) exploring:
+![after_exploring](/docs/SLAM_and_navigation/Screenshot_after_exploring.png)
+Die interne Karte spiegelt hier nicht die reale Welt wieder. Wahrscheinlich da zu wenige Feature existieren. Es gibt eher gerundete Kanten und große leere Flächen in der Map.
