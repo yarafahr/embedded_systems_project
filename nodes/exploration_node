@@ -20,10 +20,10 @@ MAX_GOALS = 10
 MAX_EXPLORATION_TIME = 120.0  
 
 
-GOAL_X_MIN = -5.0
-GOAL_X_MAX =  5.0
-GOAL_Y_MIN = -5.0
-GOAL_Y_MAX =  5.0
+GOAL_X_MIN = -4.0
+GOAL_X_MAX =  4.0
+GOAL_Y_MIN = -4.0
+GOAL_Y_MAX =  4.0
 
 
 GOAL_TIMEOUT_SEC = 60.0
@@ -46,11 +46,20 @@ def make_pose(x: float, y: float, yaw: float) -> PoseStamped:
 
 
 def random_goal() -> PoseStamped:
-    
+    global GOAL_X_MIN
+    global GOAL_X_MAX
+    global GOAL_Y_MIN
+    global GOAL_Y_MAX
+
+
     x = random.uniform(GOAL_X_MIN, GOAL_X_MAX)
     y = random.uniform(GOAL_Y_MIN, GOAL_Y_MAX)
     # yaw = random.uniform(-math.pi, math.pi)
     yaw = 1.0
+    GOAL_X_MIN -= 0.5
+    GOAL_X_MAX += 0.5
+    GOAL_Y_MIN -= 0.5
+    GOAL_Y_MAX += 0.5
     return make_pose(x, y, yaw)
 
 def toStampedPose(msg: PoseWithCovarianceStamped) -> PoseStamped:
@@ -94,18 +103,20 @@ def main():
     initial_pose.header.stamp = navigator.get_clock().now().to_msg()
     initial_pose.pose.position.x = 0.0
     initial_pose.pose.position.y = 0.0
-    navigator.setInitialPose(initial_pose)
+    # navigator.setInitialPose(initial_pose)
     home_pose = initial_pose
     exploration_node.get_logger().info('Home pose locked in')
-    navigator.waitUntilNav2Active()
-    exploration_node.get_logger().info('Nav2 is active. Let the exploration begin!')
+    # navigator.waitUntilNav2Active()
 
     
     goals_visited = 0
     goals_succeeded = 0
-    while rclpy.ok() and exploration_node.start_pose is None:
-    	rclpy.spin_once(exploration_node, timeout_sec=0.5)
+
     exploration_start = time.time()
+
+    # while rclpy.ok() and exploration_node.start_pose is None:
+    # 	rclpy.spin_once(exploration_node, timeout_sec=0.5)
+
 
     while goals_visited < MAX_GOALS:
 
@@ -125,13 +136,13 @@ def main():
             f'y={goal.pose.position.y:.2f}'
         )
         
-        path = navigator.getPath(exploration_node.start_pose, goal)
-        if path is None:
-           exploration_node.get_logger().warn(
-               'no path found for current goal, cancelling and trying next one'
-           )
-           continue
-        smoothed_path = navigator.smoothPath(path)
+        # path = navigator.getPath(exploration_node.start_pose, goal)
+        # if path is None:
+        #    exploration_node.get_logger().warn(
+        #        'no path found for current goal, cancelling and trying next one'
+        #    )
+        #    continue
+        # smoothed_path = navigator.smoothPath(path)
         navigator.goToPose(goal)
 
         # Poll until done or timeout
