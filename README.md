@@ -1,4 +1,4 @@
-c## Voraussetzungen
+## Voraussetzungen
 - Ubuntu 22.04 LTS (in UTM oder VirtualBox)
  
 ---
@@ -134,6 +134,8 @@ Zum speichern der Karte, in einem anderen Terminal:
 ``` bash
 ros2 run nav2_map_server map_saver_cli -f ~/map
 ```
+
+resultierende map:
 ![interne map](/docs/SLAM_and_teleop/map.png)
 
 ## SLAM und Navigation
