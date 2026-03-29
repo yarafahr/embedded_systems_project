@@ -18,87 +18,112 @@
       </attenuation>
     </light>
 
+    <!-- Boden -->
     <model name="ground_plane">
       <static>true</static>
       <link name="link">
         <collision name="collision">
-          <geometry><plane><normal>0 0 1</normal><size>100 100</size></plane></geometry>
+          <geometry><plane><normal>0 0 1</normal></plane></geometry>
         </collision>
         <visual name="visual">
-          <geometry><plane><normal>0 0 1</normal><size>100 100</size></plane></geometry>
-          <material><ambient>0.4 0.2 0.1 1</ambient><diffuse>0.8 0.3 0.1 1</diffuse></material>
+          <cast_shadows>false</cast_shadows>
+          <geometry><plane><normal>0 0 1</normal><size>20 20</size></plane></geometry>
+          <material>
+            <ambient>0.392 0.235 0.157 1</ambient>
+            <diffuse>0.918 0.325 0.196 1</diffuse>
+            <specular>0.196 0.118 0.078 1</specular>
+            <emissive>0 0 0 1</emissive>
+          </material>
         </visual>
       </link>
     </model>
 
-    <model name="station_walls">
+    <!-- Hindernis 1: Großer Felsen -->
+    <model name="felsen1">
       <static>true</static>
-      <link name="walls">
-        
-        <collision name="rm_s"><pose>0 -7.5 0.5 0 0 0</pose><geometry><box><size>5 0.2 1.5</size></box></geometry></collision>
-        <visual name="v_rm_s"><pose>0 -7.5 0.5 0 0 0</pose><geometry><box><size>5 0.2 1.5</size></box></geometry></visual>
+      <pose>2 1 0.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><cylinder><radius>0.5</radius><length>1.0</length></cylinder></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><cylinder><radius>0.5</radius><length>1.0</length></cylinder></geometry>
+          <material>
+            <ambient>0.235 0.196 0.176 1</ambient>
+            <diffuse>0.392 0.314 0.275 1</diffuse>
+            <specular>0.314 0.275 0.235 1</specular>
+            <emissive>0 0 0 1</emissive>
+          </material>
+        </visual>
+      </link>
+    </model>
 
-        <collision name="rm_e"><pose>2.5 -5 0.5 0 0 1.57</pose><geometry><box><size>5 0.2 1.5</size></box></geometry></collision>
-        <visual name="v_rm_e"><pose>2.5 -5 0.5 0 0 1.57</pose><geometry><box><size>5 0.2 1.5</size></box></geometry></visual>
+    <!-- Hindernis 2: Block -->
+    <model name="block1">
+      <static>true</static>
+      <pose>-2 3 0.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>1.0 1.0 1.0</size></box></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>1.0 1.0 1.0</size></box></geometry>
+          <material>
+            <ambient>0.314 0.255 0.216 1</ambient>
+            <diffuse>0.549 0.431 0.353 1</diffuse>
+            <specular>0.392 0.314 0.255 1</specular>
+            <emissive>0 0 0 1</emissive>
+          </material>
+        </visual>
+      </link>
+    </model>
 
-        <collision name="rm_w"><pose>-2.5 -5 0.5 0 0 1.57</pose><geometry><box><size>5 0.2 1.5</size></box></geometry></collision>
-        <visual name="v_rm_w"><pose>-2.5 -5 0.5 0 0 1.57</pose><geometry><box><size>5 0.2 1.5</size></box></geometry></visual>
+    <!-- Hindernis 3: Schmaler Felsen -->
+    <model name="felsen2">
+      <static>true</static>
+      <pose>3 -2 0.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><cylinder><radius>0.3</radius><length>1.0</length></cylinder></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><cylinder><radius>0.3</radius><length>1.0</length></cylinder></geometry>
+          <material>
+            <ambient>0.353 0.216 0.157 1</ambient>
+            <diffuse>0.588 0.353 0.255 1</diffuse>
+            <specular>0.275 0.196 0.157 1</specular>
+            <emissive>0 0 0 1</emissive>
+          </material>
+        </visual>
+      </link>
+    </model>
 
-        <collision name="rm_n1"><pose>-2 -2.5 0.5 0 0 0</pose><geometry><box><size>1 0.2 1.5</size></box></geometry></collision>
-        <collision name="rm_n3"><pose>2 -2.5 0.5 0 0 0</pose><geometry><box><size>1 0.2 1.5</size></box></geometry></collision>
-        <visual name="v_rm_n1"><pose>-2 -2.5 0.5 0 0 0</pose><geometry><box><size>1 0.2 1.5</size></box></geometry></visual>
-        <visual name="v_rm_n3"><pose>2 -2.5 0.5 0 0 0</pose><geometry><box><size>1 0.2 1.5</size></box></geometry></visual>
-
-        <collision name="h1_s_l"><pose>-6.25 -2.5 0.5 0 0 0</pose><geometry><box><size>7.5 0.2 1.5</size></box></geometry></collision>
-        <collision name="h1_s_r"><pose>6.25 -2.5 0.5 0 0 0</pose><geometry><box><size>7.5 0.2 1.5</size></box></geometry></collision>
-        <visual name="v_h1_s_l"><pose>-6.25 -2.5 0.5 0 0 0</pose><geometry><box><size>7.5 0.2 1.5</size></box></geometry></visual>
-        <visual name="v_h1_s_r"><pose>6.25 -2.5 0.5 0 0 0</pose><geometry><box><size>7.5 0.2 1.5</size></box></geometry></visual>
-
-        <collision name="h1_n_l"><pose>-9 1.5 0.5 0 0 0</pose><geometry><box><size>2 0.2 1.5</size></box></geometry></collision>
-        <collision name="h1_n_m"><pose>0 1.5 0.5 0 0 0</pose><geometry><box><size>12 0.2 1.5</size></box></geometry></collision>
-        <collision name="h1_n_r"><pose>9 1.5 0.5 0 0 0</pose><geometry><box><size>2 0.2 1.5</size></box></geometry></collision>
-        <visual name="v_h1_n_l"><pose>-9 1.5 0.5 0 0 0</pose><geometry><box><size>2 0.2 1.5</size></box></geometry></visual>
-        <visual name="v_h1_n_m"><pose>0 1.5 0.5 0 0 0</pose><geometry><box><size>12 0.2 1.5</size></box></geometry></visual>
-        <visual name="v_h1_n_r"><pose>9 1.5 0.5 0 0 0</pose><geometry><box><size>2 0.2 1.5</size></box></geometry></visual>
-
-        <collision name="c_w_l"><pose>-7.75 3.5 0.5 0 0 1.57</pose><geometry><box><size>4 0.2 1.5</size></box></geometry></collision>
-        <collision name="c_w_r"><pose>-6.25 3.5 0.5 0 0 1.57</pose><geometry><box><size>4 0.2 1.5</size></box></geometry></collision>
-        <visual name="v_c_w_l"><pose>-7.75 3.5 0.5 0 0 1.57</pose><geometry><box><size>4 0.2 1.5</size></box></geometry></visual>
-        <visual name="v_c_w_r"><pose>-6.25 3.5 0.5 0 0 1.57</pose><geometry><box><size>4 0.2 1.5</size></box></geometry></visual>
-
-        <collision name="c_e_l"><pose>6.25 3.5 0.5 0 0 1.57</pose><geometry><box><size>4 0.2 1.5</size></box></geometry></collision>
-        <collision name="c_e_r"><pose>7.75 3.5 0.5 0 0 1.57</pose><geometry><box><size>4 0.2 1.5</size></box></geometry></collision>
-        <visual name="v_c_e_l"><pose>6.25 3.5 0.5 0 0 1.57</pose><geometry><box><size>4 0.2 1.5</size></box></geometry></visual>
-        <visual name="v_c_e_r"><pose>7.75 3.5 0.5 0 0 1.57</pose><geometry><box><size>4 0.2 1.5</size></box></geometry></visual>
-
-        <collision name="h2_n"><pose>0 9.5 0.5 0 0 0</pose><geometry><box><size>20 0.2 1.5</size></box></geometry></collision>
-        <visual name="v_h2_n"><pose>0 9.5 0.5 0 0 0</pose><geometry><box><size>20 0.2 1.5</size></box></geometry></visual>
-
-        <collision name="h2_s_l"><pose>-9 5.5 0.5 0 0 0</pose><geometry><box><size>2 0.2 1.5</size></box></geometry></collision>
-        <collision name="h2_s_m"><pose>0 5.5 0.5 0 0 0</pose><geometry><box><size>12 0.2 1.5</size></box></geometry></collision>
-        <collision name="h2_s_r"><pose>9 5.5 0.5 0 0 0</pose><geometry><box><size>2 0.2 1.5</size></box></geometry></collision>
-        <visual name="v_h2_s_l"><pose>-9 5.5 0.5 0 0 0</pose><geometry><box><size>2 0.2 1.5</size></box></geometry></visual>
-        <visual name="v_h2_s_m"><pose>0 5.5 0.5 0 0 0</pose><geometry><box><size>12 0.2 1.5</size></box></geometry></visual>
-        <visual name="v_h2_s_r"><pose>9 5.5 0.5 0 0 0</pose><geometry><box><size>2 0.2 1.5</size></box></geometry></visual>
-
-        <collision name="h_end_w1"><pose>-10 -0.5 0.5 0 0 1.57</pose><geometry><box><size>4 0.2 1.5</size></box></geometry></collision>
-        <collision name="h_end_e1"><pose>10 -0.5 0.5 0 0 1.57</pose><geometry><box><size>4 0.2 1.5</size></box></geometry></collision>
-        <collision name="h_end_w2"><pose>-10 7.5 0.5 0 0 1.57</pose><geometry><box><size>4 0.2 1.5</size></box></geometry></collision>
-        <collision name="h_end_e2"><pose>10 7.5 0.5 0 0 1.57</pose><geometry><box><size>4 0.2 1.5</size></box></geometry></collision>
-        <visual name="v_h_end_w1"><pose>-10 -0.5 0.5 0 0 1.57</pose><geometry><box><size>4 0.2 1.5</size></box></geometry></visual>
-        <visual name="v_h_end_e1"><pose>10 -0.5 0.5 0 0 1.57</pose><geometry><box><size>4 0.2 1.5</size></box></geometry></visual>
-        <visual name="v_h_end_w2"><pose>-10 7.5 0.5 0 0 1.57</pose><geometry><box><size>4 0.2 1.5</size></box></geometry></visual>
-        <visual name="v_h_end_e2"><pose>10 7.5 0.5 0 0 1.57</pose><geometry><box><size>4 0.2 1.5</size></box></geometry></visual>
-
+    <!-- Hindernis 4: Wand -->
+    <model name="wand1">
+      <static>true</static>
+      <pose>0 -3 0.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>3.0 0.3 1.0</size></box></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>3.0 0.3 1.0</size></box></geometry>
+          <material>
+            <ambient>0.157 0.137 0.118 1</ambient>
+            <diffuse>0.275 0.216 0.176 1</diffuse>
+            <specular>0.235 0.196 0.157 1</specular>
+            <emissive>0 0 0 1</emissive>
+          </material>
+        </visual>
       </link>
     </model>
 
     <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics"/>
-    <plugin filename="gz-sim-user-commands-system" name="gz::sim::systems::UserCommands"/>
-    <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster"/>
-    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
-    <render_engine>ogre2</render_engine>
-    </plugin>
-    <plugin filename="gz-sim-imu-system" name="gz::sim::systems::Imu"/> 
+<plugin filename="gz-sim-user-commands-system" name="gz::sim::systems::UserCommands"/>
+<plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster"/>
+<plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+  <render_engine>ogre2</render_engine>
+</plugin>
+<plugin filename="gz-sim-imu-system" name="gz::sim::systems::Imu"/> 
   </world>
 </sdf>
