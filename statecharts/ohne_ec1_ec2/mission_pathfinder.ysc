@@ -15,7 +15,7 @@
               <vertices xsi:type="sgraph:State" xmi:id="_eHizGiiKEfGlOJtLHaV4WA" name="Idle" incomingTransitions="_eHizGSiKEfGlOJtLHaV4WA _yNeZwCk-EfGimP9N0Mhg2w">
                 <outgoingTransitions xmi:id="_eHizHSiKEfGlOJtLHaV4WA" specification="Trigger.start" target="_eHizJCiKEfGlOJtLHaV4WA"/>
               </vertices>
-              <vertices xsi:type="sgraph:State" xmi:id="_MY0JcCk4EfGimP9N0Mhg2w" specification="entry /raise Status.returning" name="Retrun" incomingTransitions="_P9RusCk4EfGimP9N0Mhg2w _RsVZEClaEfGimP9N0Mhg2w">
+              <vertices xsi:type="sgraph:State" xmi:id="_MY0JcCk4EfGimP9N0Mhg2w" specification="entry /raise Status.returning" name="Return" incomingTransitions="_P9RusCk4EfGimP9N0Mhg2w _RsVZEClaEfGimP9N0Mhg2w">
                 <outgoingTransitions xmi:id="_yNeZwCk-EfGimP9N0Mhg2w" specification="Map.reached_pickup_point /raise Status.mission_complete" target="_eHizGiiKEfGlOJtLHaV4WA"/>
               </vertices>
               <vertices xsi:type="sgraph:State" xmi:id="_VLlD8ClWEfGimP9N0Mhg2w" specification="entry /raise Status.in_dead_end" name="Dead_end" incomingTransitions="_X4QFkClWEfGimP9N0Mhg2w">
