@@ -36,8 +36,8 @@
         </regions>
         <regions xmi:id="_bJTCkSk1EfGimP9N0Mhg2w" name="BatteryMonitoring">
           <vertices xsi:type="sgraph:State" xmi:id="_i8q0ECk8EfGimP9N0Mhg2w" specification="entry /raise Battery.check_level" name="Monitoring" incomingTransitions="_lsEZkCk8EfGimP9N0Mhg2w _RJVjEClBEfGimP9N0Mhg2w">
-            <outgoingTransitions xmi:id="_yToaMClAEfGimP9N0Mhg2w" specification=" Battery.level_checked [Battery.level &lt;= 5]" target="_tp0WcClAEfGimP9N0Mhg2w"/>
-            <outgoingTransitions xmi:id="_AoRkgClBEfGimP9N0Mhg2w" specification=" Battery.level_checked [Battery.level > 5]" target="_l49pQClAEfGimP9N0Mhg2w"/>
+            <outgoingTransitions xmi:id="_yToaMClAEfGimP9N0Mhg2w" specification="Battery.level_checked [Battery.level &lt;= 5]" target="_tp0WcClAEfGimP9N0Mhg2w"/>
+            <outgoingTransitions xmi:id="_AoRkgClBEfGimP9N0Mhg2w" specification="Battery.level_checked [Battery.level > 5]" target="_l49pQClAEfGimP9N0Mhg2w"/>
           </vertices>
           <vertices xsi:type="sgraph:Entry" xmi:id="_kxEw8Ck8EfGimP9N0Mhg2w">
             <outgoingTransitions xmi:id="_lsEZkCk8EfGimP9N0Mhg2w" specification="" target="_i8q0ECk8EfGimP9N0Mhg2w"/>
