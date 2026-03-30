@@ -1,0 +1,75 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+  <world name="mars_station_watertight">
+    
+    <physics name="1ms" type="ignored">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+    </physics>
+
+    <light type="directional" name="sun">
+      <cast_shadows>true</cast_shadows>
+      <pose>0 0 10 0 0 0</pose>
+      <diffuse>0.9 0.4 0.2 1</diffuse>
+      <specular>0.2 0.1 0.1 1</specular>
+      <direction>-1 -1 -1</direction>
+    </light>
+
+    <model name="ground_plane">
+      <static>true</static>
+      <link name="link">
+        <collision name="collision"><geometry><plane><normal>0 0 1</normal><size>100 100</size></plane></geometry></collision>
+        <visual name="visual"><geometry><plane><normal>0 0 1</normal><size>100 100</size></plane></geometry>
+          <material><ambient>0.4 0.2 0.1 1</ambient><diffuse>0.8 0.3 0.1 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="spawn_room">
+      <static>true</static>
+      <pose>0 -5 0 0 0 0</pose>
+      <model name="wall_s"><pose>0 -2.5 0.5 0 0 0</pose><link name="l"><collision name="c"><geometry><box><size>5.2 0.2 1.5</size></box></geometry></collision><visual name="v"><geometry><box><size>5.2 0.2 1.5</size></box></geometry></visual></link></model>
+      <model name="wall_e"><pose>2.5 0 0.5 0 0 1.57</pose><link name="l"><collision name="c"><geometry><box><size>5.2 0.2 1.5</size></box></geometry></collision><visual name="v"><geometry><box><size>5.2 0.2 1.5</size></box></geometry></visual></link></model>
+      <model name="wall_w"><pose>-2.5 0 0.5 0 0 1.57</pose><link name="l"><collision name="c"><geometry><box><size>5.2 0.2 1.5</size></box></geometry></collision><visual name="v"><geometry><box><size>5.2 0.2 1.5</size></box></geometry></visual></link></model>
+      <model name="exit_l"><pose>-2 2.5 0.5 0 0 0</pose><link name="l"><collision name="c"><geometry><box><size>1.1 0.2 1.5</size></box></geometry></collision><visual name="v"><geometry><box><size>1.1 0.2 1.5</size></box></geometry></visual></link></model>
+      <model name="exit_r"><pose>2 2.5 0.5 0 0 0</pose><link name="l"><collision name="c"><geometry><box><size>1.1 0.2 1.5</size></box></geometry></collision><visual name="v"><geometry><box><size>1.1 0.2 1.5</size></box></geometry></visual></link></model>
+    </model>
+
+    <model name="hallway_1">
+      <static>true</static>
+      <pose>0 -0.5 0 0 0 0</pose>
+      <model name="s_wall_l"><pose>-6.25 -2 0.5 0 0 0</pose><link name="l"><collision name="c"><geometry><box><size>7.6 0.2 1.5</size></box></geometry></collision><visual name="v"><geometry><box><size>7.6 0.2 1.5</size></box></geometry></visual></link></model>
+      <model name="s_wall_r"><pose>6.25 -2 0.5 0 0 0</pose><link name="l"><collision name="c"><geometry><box><size>7.6 0.2 1.5</size></box></geometry></collision><visual name="v"><geometry><box><size>7.6 0.2 1.5</size></box></geometry></visual></link></model>
+      <model name="n_wall_l"><pose>-9 2 0.5 0 0 0</pose><link name="l"><collision name="c"><geometry><box><size>2.2 0.2 1.5</size></box></geometry></collision><visual name="v"><geometry><box><size>2.2 0.2 1.5</size></box></geometry></visual></link></model>
+      <model name="n_wall_m"><pose>0 2 0.5 0 0 0</pose><link name="l"><collision name="c"><geometry><box><size>12.2 0.2 1.5</size></box></geometry></collision><visual name="v"><geometry><box><size>12.2 0.2 1.5</size></box></geometry></visual></link></model>
+      <model name="n_wall_r"><pose>9 2 0.5 0 0 0</pose><link name="l"><collision name="c"><geometry><box><size>2.2 0.2 1.5</size></box></geometry></collision><visual name="v"><geometry><box><size>2.2 0.2 1.5</size></box></geometry></visual></link></model>
+      <model name="cap_w"><pose>-10 0 0.5 0 0 1.57</pose><link name="l"><collision name="c"><geometry><box><size>4.2 0.2 1.5</size></box></geometry></collision><visual name="v"><geometry><box><size>4.2 0.2 1.5</size></box></geometry></visual></link></model>
+      <model name="cap_e"><pose>10 0 0.5 0 0 1.57</pose><link name="l"><collision name="c"><geometry><box><size>4.2 0.2 1.5</size></box></geometry></collision><visual name="v"><geometry><box><size>4.2 0.2 1.5</size></box></geometry></visual></link></model>
+    </model>
+
+    <model name="connectors">
+      <static>true</static>
+      <pose>0 3.5 0 0 0 0</pose>
+      <model name="cw_1"><pose>-7.9 0 0.5 0 0 1.57</pose><link name="l"><collision name="c"><geometry><box><size>4.2 0.2 1.5</size></box></geometry></collision><visual name="v"><geometry><box><size>4.2 0.2 1.5</size></box></geometry></visual></link></model>
+      <model name="cw_2"><pose>-6.1 0 0.5 0 0 1.57</pose><link name="l"><collision name="c"><geometry><box><size>4.2 0.2 1.5</size></box></geometry></collision><visual name="v"><geometry><box><size>4.2 0.2 1.5</size></box></geometry></visual></link></model>
+      <model name="ce_1"><pose>6.1 0 0.5 0 0 1.57</pose><link name="l"><collision name="c"><geometry><box><size>4.2 0.2 1.5</size></box></geometry></collision><visual name="v"><geometry><box><size>4.2 0.2 1.5</size></box></geometry></visual></link></model>
+      <model name="ce_2"><pose>7.9 0 0.5 0 0 1.57</pose><link name="l"><collision name="c"><geometry><box><size>4.2 0.2 1.5</size></box></geometry></collision><visual name="v"><geometry><box><size>4.2 0.2 1.5</size></box></geometry></visual></link></model>
+    </model>
+
+    <model name="hallway_2">
+      <static>true</static>
+      <pose>0 7.5 0 0 0 0</pose>
+      <model name="n_wall"><pose>0 2 0.5 0 0 0</pose><link name="l"><collision name="c"><geometry><box><size>20.2 0.2 1.5</size></box></geometry></collision><visual name="v"><geometry><box><size>20.2 0.2 1.5</size></box></geometry></visual></link></model>
+      <model name="s_wall_l"><pose>-9 -2 0.5 0 0 0</pose><link name="l"><collision name="c"><geometry><box><size>2.2 0.2 1.5</size></box></geometry></collision><visual name="v"><geometry><box><size>2.2 0.2 1.5</size></box></geometry></visual></link></model>
+      <model name="s_wall_m"><pose>0 -2 0.5 0 0 0</pose><link name="l"><collision name="c"><geometry><box><size>12.2 0.2 1.5</size></box></geometry></collision><visual name="v"><geometry><box><size>12.2 0.2 1.5</size></box></geometry></visual></link></model>
+      <model name="s_wall_r"><pose>9 -2 0.5 0 0 0</pose><link name="l"><collision name="c"><geometry><box><size>2.2 0.2 1.5</size></box></geometry></collision><visual name="v"><geometry><box><size>2.2 0.2 1.5</size></box></geometry></visual></link></model>
+      <model name="cap_w"><pose>-10 0 0.5 0 0 1.57</pose><link name="l"><collision name="c"><geometry><box><size>4.2 0.2 1.5</size></box></geometry></collision><visual name="v"><geometry><box><size>4.2 0.2 1.5</size></box></geometry></visual></link></model>
+      <model name="cap_e"><pose>10 0 0.5 0 0 1.57</pose><link name="l"><collision name="c"><geometry><box><size>4.2 0.2 1.5</size></box></geometry></collision><visual name="v"><geometry><box><size>4.2 0.2 1.5</size></box></geometry></visual></link></model>
+    </model>
+
+    <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics"/>
+    <plugin filename="gz-sim-user-commands-system" name="gz::sim::systems::UserCommands"/>
+    <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster"/>
+    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors"><render_engine>ogre2</render_engine></plugin>
+  </world>
+</sdf>
