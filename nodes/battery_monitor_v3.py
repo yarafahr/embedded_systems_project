@@ -9,6 +9,9 @@ from rclpy.time import Time
 from nav2_msgs.srv import ManageLifecycleNodes
 from nav2_simple_commander.robot_navigator import BasicNavigator
 
+from action_msgs.msg import GoalStatusArray
+from action_msgs.msg import GoalStatus
+
 from geometry_msgs.msg import Twist, PoseStamped, Pose
 from geometry_msgs.msg import PoseWithCovarianceStamped
 from std_msgs.msg import String
@@ -24,6 +27,7 @@ SETTLE_DURATION_SEC        = 5.0         # real seconds to wait in SETTLING
 CONFIRM_DURATION_SEC       = 5.0         # real seconds to poll in CONFIRM_STOP
 BATTERY_OK_DURATION_SEC    = 1.0         # real seconds to stay in BATTERY_OK
 WAIT_PICKUP_INTERVAL_SEC   = 10.0        # real seconds between position signals
+MAX_ATTEMPTS = 3
 
 # How long to sleep at the end of each loop iteration (seconds).
 # Keeps CPU usage sane without blocking ROS2 callbacks.
@@ -70,6 +74,7 @@ class BatteryMonitor(Node):
         super().__init__('battery_monitor')
 
         self._with_exploration_node = with_exploration_node
+        self._abort_attempts: int = 0
 
         # ── Lifecycle manager discovery ────────────────────────────────────
         self._available_managers: list[str] = []
@@ -99,7 +104,12 @@ class BatteryMonitor(Node):
                                  self._cmd_vel_callback, 10)
         self.create_subscription(PoseWithCovarianceStamped, '/pose',
                                  self._pose_callback, 10)
-
+        self.create_subscription(
+            GoalStatusArray,
+            '/navigate_to_pose/_action/status',
+            self._nav_status_callback,
+            10
+        )
         # ── Publishers ────────────────────────────────────────────────────
         self.cmd_vel_pub            = self.create_publisher(Twist, '/cmd_vel', 1)
         self.emergency_position_pub = self.create_publisher(
@@ -169,7 +179,7 @@ class BatteryMonitor(Node):
         Every timed guard computes elapsed = now - _state_entered_time.
         """
         self.get_logger().info(
-            f'[FSM] {self._state.name} → {new_state.name}'
+             f'[FSM] {self._state.name} → {new_state.name}'
         )
         self._state              = new_state
         self._state_entered_time = self.get_clock().now()
@@ -433,6 +443,33 @@ class BatteryMonitor(Node):
 
     def _pose_callback(self, msg: PoseWithCovarianceStamped) -> None:
         self.current_pose = msg.pose.pose
+    
+    def _nav_status_callback(self, msg: GoalStatusArray) -> None:
+        if not msg.status_list:
+            return
+
+        latest_status = msg.status_list[-1].status
+
+        
+        if (latest_status == GoalStatus.STATUS_ABORTED):
+
+            if self._state not in (RobotState.CANCEL_TASK, RobotState.SETTLING,
+                                RobotState.CONFIRM_STOP, RobotState.SHUTDOWN_NAV,
+                                RobotState.WAIT_PICKUP):
+                self._abort_attempts += 1
+                self.get_logger().warn(
+                    f'[FSM] Task aborted — attempt {self._abort_attempts}/{MAX_ATTEMPTS}'
+                )
+                if self._abort_attempts >= MAX_ATTEMPTS:
+                    self.get_logger().warn('[FSM] Max aborts reached → CANCEL_TASK')
+                    self._abort_attempts = 0
+                    self._transition_to(RobotState.CANCEL_TASK)
+
+        
+        if (latest_status == GoalStatus.STATUS_SUCCEEDED):
+            self.get_logger().info('[FSM] New goal executing — resetting abort counter')
+            self._abort_attempts = 0
+
 
     # ──────────────────────────────────────────────────────────────────────
     #  Lifecycle-manager discovery
