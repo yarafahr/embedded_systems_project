@@ -1,5 +1,6 @@
 import json
 import time
+import argparse
 
 import rclpy
 from rclpy.node import Node
@@ -65,8 +66,10 @@ class RobotState(Enum):
 
 class BatteryMonitor(Node):
 
-    def __init__(self):
+    def __init__(self, with_exploration_node: bool = False):
         super().__init__('battery_monitor')
+
+        self._with_exploration_node = with_exploration_node
 
         # ── Lifecycle manager discovery ────────────────────────────────────
         self._available_managers: list[str] = []
@@ -111,7 +114,8 @@ class BatteryMonitor(Node):
             f'   charge={self.current_charge:.1f}%  '
             f'threshold={LOW_BATTERY_THRESHOLD:.1f}%\n'
             f'   loop rate ≈ {1/LOOP_SLEEP_SEC:.0f} Hz  |  '
-            f'position signal every {WAIT_PICKUP_INTERVAL_SEC:.0f}s'
+            f'position signal every {WAIT_PICKUP_INTERVAL_SEC:.0f}s\n'
+            f'   with_exploration_node={self._with_exploration_node}'
         )
 
     # ──────────────────────────────────────────────────────────────────────
@@ -225,8 +229,14 @@ class BatteryMonitor(Node):
 
     def _state_battery_low(self) -> None:
         """
-        Relay state — Transition to CANCEL_TASK instantly and advance this iteration.
+        Relay state.
+        • with_exploration_node=False (default) → relay instantly to CANCEL_TASK.
+        We own the shutdown chain.
+        • with_exploration_node=True → do nothing and stay here.
+        The exploration node is responsible for stopping navigation.
         """
+        if self._with_exploration_node:
+            return
         self._transition_to(RobotState.CANCEL_TASK)
 
     def _state_cancel_task(self) -> None:
@@ -456,8 +466,19 @@ class BatteryMonitor(Node):
 # ──────────────────────────────────────────────────────────────────────────
 
 def main(args=None):
-    rclpy.init(args=args)
-    node = BatteryMonitor()
+    parser = argparse.ArgumentParser(description='Battery Monitor Node')
+    parser.add_argument(
+        '--with_exploration_node',
+        action='store_true',          # present → True, absent → False
+        default=False,
+        help='If set, BATTERY_LOW will NOT relay to CANCEL_TASK '
+             '(exploration node handles shutdown itself).'
+    )
+
+    our_args, ros_args = parser.parse_known_args()
+
+    rclpy.init(args=ros_args)
+    node = BatteryMonitor(with_exploration_node=our_args.with_exploration_node)
     try:
         node.run()
     except KeyboardInterrupt:
