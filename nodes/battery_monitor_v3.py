@@ -14,8 +14,8 @@ from std_msgs.msg import String
 
 
 # ── Configuration ──────────────────────────────────────────────────────────
-INITIAL_CHARGE_PERCENTAGE  = 30.0
-LOW_BATTERY_THRESHOLD      = 20.0        # % — triggers low-battery chain
+INITIAL_CHARGE_PERCENTAGE  = 100.0
+LOW_BATTERY_THRESHOLD      = 5.0        # % — triggers low-battery chain
 IDLE_DRAIN_PER_SECOND      = 0.05
 MOVEMENT_DRAIN_PER_SECOND  = 0.5
 
@@ -26,7 +26,7 @@ WAIT_PICKUP_INTERVAL_SEC   = 10.0        # real seconds between position signals
 
 # How long to sleep at the end of each loop iteration (seconds).
 # Keeps CPU usage sane without blocking ROS2 callbacks.
-LOOP_SLEEP_SEC             = 0.05        # 20 Hz — plenty of resolution
+LOOP_SLEEP_SEC             = 0.1        # 10 Hz — plenty of resolution
 
 
 from enum import Enum, auto
