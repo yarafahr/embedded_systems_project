@@ -104,12 +104,13 @@ class BatteryMonitor(Node):
                                  self._cmd_vel_callback, 10)
         self.create_subscription(PoseWithCovarianceStamped, '/pose',
                                  self._pose_callback, 10)
-        self.create_subscription(
-            GoalStatusArray,
-            '/navigate_to_pose/_action/status',
-            self._nav_status_callback,
-            10
-        )
+        if not self._with_exploration_node:
+            self.create_subscription(
+                GoalStatusArray,
+                '/navigate_to_pose/_action/status',
+                self._nav_status_callback,
+                10
+            )
         # ── Publishers ────────────────────────────────────────────────────
         self.cmd_vel_pub            = self.create_publisher(Twist, '/cmd_vel', 1)
         self.emergency_position_pub = self.create_publisher(
