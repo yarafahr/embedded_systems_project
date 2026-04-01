@@ -467,7 +467,7 @@ class BatteryMonitor(Node):
 
         
         if (latest_status == GoalStatus.STATUS_SUCCEEDED):
-            self.get_logger().info('[FSM] New goal executing — resetting abort counter')
+            self.get_logger().info('[FSM] Goal execution succeeded — resetting abort counter')
             self._abort_attempts = 0
 
 
