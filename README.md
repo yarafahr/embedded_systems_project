@@ -98,16 +98,24 @@ Gazebo öffnet sich mit der Mars-Welt und der TurtleBot3 wird automatisch gespaw
 ## Projektstruktur
  
 ```
-mars_world/
+embedded_systems_project/
+├── docs/                       # Dokumentation
+│   └── ...
+├── statecharts/                # Statecharts
+│   └── ...
 ├── worlds/
-│   └── mars_v3.sdf                # Mars-Simulationswelt
+|   ├── mars_v3.sdf             # Mars-Simulationswelt
+│   └── ...
 ├── models/
 │   └── turtlebot3_burger/
 │       └── model.sdf           # migriertes burger Modell
 ├── nodes/
 │   └── battery_monitor_v3.py   # Battery Monitor node
-└── launch/
-    └── mars_v3_launch.py       # Startet Gazebo + TurtleBot3
+├── params/
+│   └── nav2_params.yaml        # Parameter für Nav2
+├── launch/
+│   └── mars_v3_launch.py       # Startet Gazebo + TurtleBot3
+└── setup.sh                    # projekt installations script
 ```
  
 ---
@@ -204,4 +212,10 @@ ros2 run rviz2 rviz2 -d /opt/ros/humble/share/nav2_bringup/rviz/nav2_default_vie
 Starte Battery_monitor in einem anderen Terminal:
 ``` bash
 python3 ~/ros2_ws/src/embedded_systems_project/nodes/battery_monitor_v3.py
+```
+
+Mit diessen kommandos kannst du dir die Events des Roboters ansehen:
+```bash
+ros2 topic echo /Wifi/send_position
+ros2 topic echo /status
 ```

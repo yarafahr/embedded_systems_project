@@ -18,7 +18,7 @@ from std_msgs.msg import String
 
 
 # ── Configuration ──────────────────────────────────────────────────────────
-INITIAL_CHARGE_PERCENTAGE  = 100.0
+INITIAL_CHARGE_PERCENTAGE  = 20.0
 LOW_BATTERY_THRESHOLD      = 5.0        # % — triggers low-battery chain
 IDLE_DRAIN_PER_SECOND      = 0.05
 MOVEMENT_DRAIN_PER_SECOND  = 0.5
@@ -401,25 +401,6 @@ class BatteryMonitor(Node):
         ps.header.frame_id = 'map'
         ps.pose            = self.current_pose
         self.emergency_position_pub.publish(ps)
-
-        msg      = String()
-        msg.data = json.dumps({
-            'signal':             'Wifi_send_position',
-            'timestamp':          self.get_clock().now().nanoseconds / 1e9,
-            'battery_percentage': round(self.current_charge, 2),
-            'position': {
-                'x': round(self.current_pose.position.x, 3),
-                'y': round(self.current_pose.position.y, 3),
-                'z': round(self.current_pose.position.z, 3),
-            },
-            'orientation': {
-                'x': round(self.current_pose.orientation.x, 3),
-                'y': round(self.current_pose.orientation.y, 3),
-                'z': round(self.current_pose.orientation.z, 3),
-                'w': round(self.current_pose.orientation.w, 3),
-            },
-        })
-        self.emergency_status_pub.publish(msg)
 
         self.get_logger().info(
             f'📍 Wifi·send_position raised | '
