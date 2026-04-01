@@ -100,12 +100,14 @@ Gazebo öffnet sich mit der Mars-Welt und der TurtleBot3 wird automatisch gespaw
 ```
 mars_world/
 ├── worlds/
-│   └── mars.sdf            # Mars-Simulationswelt
+│   └── mars_v3.sdf                # Mars-Simulationswelt
 ├── models/
 │   └── turtlebot3_burger/
-│       └── model.sdf       # migriertes burger Modell
+│       └── model.sdf           # migriertes burger Modell
+├── nodes/
+│   └── battery_monitor_v3.py   # Battery Monitor node
 └── launch/
-    └── mars_launch.py      # Startet Gazebo + TurtleBot3
+    └── mars_v3_launch.py       # Startet Gazebo + TurtleBot3
 ```
  
 ---
@@ -114,7 +116,7 @@ mars_world/
 
 Starte die Simulation:
 ``` bash
-ros2 launch ~/ros2_ws/src/embedded_systems_project/launch/mars_launch.py
+ros2 launch ~/ros2_ws/src/embedded_systems_project/launch/mars_v3_launch.py
 ```
 
 Starte die SLAM Node in einem anderen Terminal:
@@ -144,7 +146,7 @@ resultierende map:
 
 Starte die Simulation:
 ``` bash
-ros2 launch ~/ros2_ws/src/embedded_systems_project/launch/mars_launch.py
+ros2 launch ~/ros2_ws/src/embedded_systems_project/launch/mars_v3_launch.py
 ```
 
 Starte SLAM-toolbox in einem anderen Terminal:
@@ -165,12 +167,41 @@ ros2 run rviz2 rviz2 -d /opt/ros/humble/share/nav2_bringup/rviz/nav2_default_vie
 
 Nun Kannst du in RVIZ "Nav2Goal" anklicken, auf der Karte das Ziel markieren und der Roboter findet autonom dahin.
 
-after bringup:
+Nach dem Start:
 ![after_bringup](/docs/SLAM_and_navigation/Screenshot_bringup.png)
 
-while navigating:
+Während dem navigieren:
 ![while_navigating](/docs/SLAM_and_navigation/Screenshot_navigating.png)s
 
-after some time (manualy) exploring:
+Nach einiger Zeit des (manuellen) Erkunden:
 ![after_exploring](/docs/SLAM_and_navigation/Screenshot_after_exploring.png)
-Die interne Karte spiegelt hier nicht die reale Welt wieder. Wahrscheinlich da zu wenige Feature existieren. Es gibt eher gerundete Kanten und große leere Flächen in der Map.
+
+
+## SLAM, Navigation und Battery
+
+
+Starte die Simulation:
+``` bash
+ros2 launch ~/ros2_ws/src/embedded_systems_project/launch/mars_v3_launch.py
+```
+
+Starte SLAM-toolbox in einem anderen Terminal:
+``` bash
+ros2 launch slam_toolbox online_async_launch.py use_sim_time:=True
+
+```
+
+Starte Nav2 in einem anderen Terminal:
+``` bash
+ros2 launch nav2_bringup navigation_launch.py   use_sim_time:=True   params_file:=$HOME/ros2_ws/src/embedded_systems_project/params/nav2_params.yaml
+```
+
+Starte RViz in einem anderen Terminal:
+``` bash
+ros2 run rviz2 rviz2 -d /opt/ros/humble/share/nav2_bringup/rviz/nav2_default_view.rviz
+```
+
+Starte Battery_monitor in einem anderen Terminal:
+``` bash
+python3 ~/ros2_ws/src/embedded_systems_project/nodes/battery_monitor_v3.py
+```
