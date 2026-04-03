@@ -1,0 +1,197 @@
+#!/usr/bin/env python3
+
+
+import rclpy
+import random
+import math
+import time
+
+from rclpy.node import Node
+from rclpy.duration import Duration
+from nav2_simple_commander.robot_navigator import BasicNavigator, TaskResult
+from geometry_msgs.msg import PoseStamped, PoseWithCovarianceStamped
+
+
+
+
+MAX_GOALS = 10
+
+
+MAX_EXPLORATION_TIME = 120.0  
+
+
+GOAL_X_MIN = -4.0
+GOAL_X_MAX =  4.0
+GOAL_Y_MIN = -4.0
+GOAL_Y_MAX =  4.0
+
+
+GOAL_TIMEOUT_SEC = 60.0
+
+
+
+
+def make_pose(x: float, y: float, yaw: float) -> PoseStamped:
+   
+    pose = PoseStamped()
+    pose.header.frame_id = 'map'
+    pose.pose.position.x = x
+    pose.pose.position.y = y
+    pose.pose.position.z = 0.0
+    # Convert yaw to quaternion (rotation around Z axis only)
+    # pose.pose.orientation.z = math.sin(yaw / 2.0)
+    # pose.pose.orientation.w = math.cos(yaw / 2.0)
+    pose.pose.orientation.w = yaw
+    return pose
+
+
+def random_goal() -> PoseStamped:
+    global GOAL_X_MIN
+    global GOAL_X_MAX
+    global GOAL_Y_MIN
+    global GOAL_Y_MAX
+
+
+    x = random.uniform(GOAL_X_MIN, GOAL_X_MAX)
+    y = random.uniform(GOAL_Y_MIN, GOAL_Y_MAX)
+    # yaw = random.uniform(-math.pi, math.pi)
+    yaw = 1.0
+    GOAL_X_MIN -= 0.5
+    GOAL_X_MAX += 0.5
+    GOAL_Y_MIN -= 0.5
+    GOAL_Y_MAX += 0.5
+    return make_pose(x, y, yaw)
+
+def toStampedPose(msg: PoseWithCovarianceStamped) -> PoseStamped:
+    p = msg.pose.pose
+    stamped = PoseStamped()
+    stamped.header = msg.header
+    stamped.header.frame_id = 'map'
+    stamped.pose = p
+    return stamped
+
+class ExplorationNode(Node):
+    
+
+    def __init__(self):
+        super().__init__('exploration_node')
+        self.start_pose: PoseStamped | None = None
+
+        self._amcl_sub = self.create_subscription(
+            PoseWithCovarianceStamped,
+            '/amcl_pose',
+            self._amcl_callback,
+            10
+        )
+        self.get_logger().info('Waiting for initial AMCL pose on /amcl_pose ...')
+
+    def _amcl_callback(self, msg: PoseWithCovarianceStamped):
+            self.start_pose = toStampedPose(msg)
+
+
+
+def main():
+    rclpy.init()
+
+    
+    exploration_node = ExplorationNode()
+
+    
+    navigator = BasicNavigator()
+    initial_pose = PoseStamped()
+    initial_pose.header.frame_id = 'map'
+    initial_pose.header.stamp = navigator.get_clock().now().to_msg()
+    initial_pose.pose.position.x = 0.0
+    initial_pose.pose.position.y = 0.0
+    # navigator.setInitialPose(initial_pose)
+    home_pose = initial_pose
+    exploration_node.get_logger().info('Home pose locked in')
+    # navigator.waitUntilNav2Active()
+
+    
+    goals_visited = 0
+    goals_succeeded = 0
+
+    exploration_start = time.time()
+
+    # while rclpy.ok() and exploration_node.start_pose is None:
+    # 	rclpy.spin_once(exploration_node, timeout_sec=0.5)
+
+
+    while goals_visited < MAX_GOALS:
+
+        # Check time budget
+        elapsed = time.time() - exploration_start
+        if MAX_EXPLORATION_TIME and elapsed >= MAX_EXPLORATION_TIME:
+            exploration_node.get_logger().info(
+                f'Time limit reached ({MAX_EXPLORATION_TIME}s). Heading home.'
+            )
+            break
+
+        goal = random_goal()
+        goals_visited += 1
+        exploration_node.get_logger().info(
+            f'[{goals_visited}/{MAX_GOALS}] '
+            f'Navigating to x={goal.pose.position.x:.2f}, '
+            f'y={goal.pose.position.y:.2f}'
+        )
+        
+        # path = navigator.getPath(exploration_node.start_pose, goal)
+        # if path is None:
+        #    exploration_node.get_logger().warn(
+        #        'no path found for current goal, cancelling and trying next one'
+        #    )
+        #    continue
+        # smoothed_path = navigator.smoothPath(path)
+        navigator.goToPose(goal)
+
+        # Poll until done or timeout
+        goal_start = time.time()
+        while not navigator.isTaskComplete():
+            #rclpy.spin_once(exploration_node, timeout_sec=0.1)
+            if time.time() - goal_start > GOAL_TIMEOUT_SEC:
+                exploration_node.get_logger().warn(
+                    f'Goal {goals_visited} timed out after {GOAL_TIMEOUT_SEC}s. '
+                    'Cancelling and trying next goal.'
+                )
+                navigator.cancelTask()
+                break
+
+        result = navigator.getResult()
+        if result == TaskResult.SUCCEEDED:
+            goals_succeeded += 1
+            exploration_node.get_logger().info(
+                f'Goal {goals_visited} reached! '
+                f'({goals_succeeded} succeeded so far)'
+            )
+        elif result == TaskResult.CANCELED:
+            exploration_node.get_logger().warn(f'Goal {goals_visited} was cancelled.')
+        else:
+            exploration_node.get_logger().warn(
+                f'Goal {goals_visited} failed (result={result}). Trying next.'
+            )
+
+    exploration_node.get_logger().info(
+        f'Exploration complete. Visited {goals_visited} goals, '
+        f'{goals_succeeded} succeeded. Returning home...'
+    )
+
+    navigator.goToPose(home_pose)
+
+    while not navigator.isTaskComplete():
+        rclpy.spin_once(exploration_node, timeout_sec=0.1)
+
+    result = navigator.getResult()
+    if result == TaskResult.SUCCEEDED:
+        exploration_node.get_logger().info('Successfully returned home!')
+    else:
+        exploration_node.get_logger().error(
+            f'Failed to return home (result={result}).'
+        )
+
+    exploration_node.destroy_node()
+    rclpy.shutdown()
+
+
+if __name__ == '__main__':
+    main()
